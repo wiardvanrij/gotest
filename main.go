@@ -3,14 +3,18 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/jessevdk/go-flags"
 	core "github.com/wiardvanrij/testing/scanner"
 )
 
+var Ports []int
+
 type Commands struct {
 	Hostname string `long:"hostname" description:"A hostname" required:"true"`
-	Port     int64  `short:"p" long:"port" description:"A port" required:"true"`
+	Ports    string `short:"p"  long:"port" description:"Small, Medium, Large, Xlarge or custom comma seperated list" required:"true"`
 }
 
 func main() {
@@ -25,10 +29,27 @@ func main() {
 		}
 	}
 
+	if val, ok := core.Ports[commands.Ports]; ok {
+		Ports = val
+	} else {
+		for _, p := range strings.Split(commands.Ports, ",") {
+			port, err := strconv.Atoi(strings.TrimSpace(p))
+			if err != nil {
+				fmt.Println("Invalid port range")
+				os.Exit(1)
+			}
+			if port < 1 || port > 65535 {
+				fmt.Println("Invalid port")
+				os.Exit(1)
+			}
+			Ports = append(Ports, port)
+		}
+	}
+
 	if ip, err := core.GetIP(commands.Hostname); err != nil {
 		fmt.Println(err)
 		os.Exit(0)
 	} else {
-		core.StartScan(ip.String())
+		core.StartScan(ip.String(), Ports)
 	}
 }

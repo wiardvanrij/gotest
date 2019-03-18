@@ -9,12 +9,10 @@ import (
 	"time"
 )
 
-func StartScan(host string) {
+func StartScan(host string, ports []int) {
 
-	sliceLength := len(LargePortList)
-
+	sliceLength := len(ports)
 	concurrency := 20
-
 	var wg sync.WaitGroup
 
 	wg.Add(sliceLength)
@@ -27,7 +25,7 @@ func StartScan(host string) {
 			defer func() {
 				<-semaphore
 			}()
-			val := LargePortList[i]
+			val := ports[i]
 			getPorts(host, val)
 		}(i)
 	}
