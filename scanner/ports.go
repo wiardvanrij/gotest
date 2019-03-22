@@ -1,4 +1,4 @@
-package core
+package scanner
 
 var Ports = map[string][]int{
 	"Small":  []int{80, 443},

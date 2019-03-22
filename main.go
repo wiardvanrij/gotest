@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/jessevdk/go-flags"
-	core "github.com/wiardvanrij/testing/scanner"
+	"github.com/wiardvanrij/testing/scanner"
 )
 
 var Ports []int
@@ -29,7 +29,7 @@ func main() {
 		}
 	}
 
-	if val, ok := core.Ports[commands.Ports]; ok {
+	if val, ok := scanner.Ports[commands.Ports]; ok {
 		Ports = val
 	} else {
 		for _, p := range strings.Split(commands.Ports, ",") {
@@ -46,10 +46,10 @@ func main() {
 		}
 	}
 
-	if ip, err := core.GetIP(commands.Hostname); err != nil {
+	if ip, err := scanner.GetIP(commands.Hostname); err != nil {
 		fmt.Println(err)
 		os.Exit(0)
 	} else {
-		core.StartScan(ip.String(), Ports)
+		scanner.StartScan(ip.String(), Ports)
 	}
 }
